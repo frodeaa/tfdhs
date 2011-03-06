@@ -348,6 +348,7 @@ public class HttpClientWindow implements ClientWindow,
 	editHeaderToolbar.setFloatable(false);
 	editHeaderToolbar.setRollover(true);
 	editHeaderToolbar.setName("editHeaderToolbar");
+	editHeaderToolbar.setVisible(false);
 
 	addHeaderButton.setText("+");
 	addHeaderButton.setFocusable(false);
