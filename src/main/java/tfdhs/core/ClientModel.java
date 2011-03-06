@@ -5,6 +5,12 @@ import javax.swing.table.TableModel;
 
 import tfdhs.api.HttpMethod;
 
+/**
+ * Client model, holds all properties needed to create a HttpRequest
+ * 
+ * @author frode
+ * 
+ */
 public class ClientModel {
 
     private static final Class<?>[] HEADER_TYPES = new Class[] {
@@ -16,15 +22,24 @@ public class ClientModel {
     private boolean bodySet;
     private String body;
 
+    /**
+     * Create a new Model, ready for GET request.
+     */
     public ClientModel() {
-	headers = new DefaultTableModel(new String[] { "Header Name",
+	setUrl(null);
+	setHeaders(new DefaultTableModel(new String[] { "Header Name",
 		"Header Value" }, 0) {
 
 	    public Class<?> getColumnClass(int columnIndex) {
 		return HEADER_TYPES[columnIndex];
 	    }
-	};
-	this.method = HttpMethod.GET;
+	});
+
+	setUrl(null);
+	setFollowRedirects(false);
+	setMethod(HttpMethod.GET);
+	setBody(null);
+	setBodySet(false);
     }
 
     public String getUrl() {
