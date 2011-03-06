@@ -1,5 +1,6 @@
 package tfdhs.core;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -71,6 +72,18 @@ public class HttpURLConnectionHttpServiceTest {
 
 	assertNotNull("URL null", url);
 	assertEquals("URL host", "localhost", url.getHost());
+
+    }
+
+    @Test
+    public void testReadInput() throws IOException {
+
+	String expected = "simple\ntest\nstring\n";
+	ByteArrayInputStream input = new ByteArrayInputStream(
+		expected.getBytes());
+
+	assertEquals("Input read", expected,
+		HttpURLConnectionHttpService.readInput(input));
 
     }
 

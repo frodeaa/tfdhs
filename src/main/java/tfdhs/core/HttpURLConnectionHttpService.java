@@ -1,6 +1,9 @@
 package tfdhs.core;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -62,6 +65,28 @@ public class HttpURLConnectionHttpService implements HttpService {
      */
     protected URL newUrl(HttpRequest request) throws MalformedURLException {
 	return new URL(request.getUrl());
+    }
+
+    /**
+     * Consumes an input stream.
+     * 
+     * @param is
+     *            the input to read.
+     * @return the content read from the input stream.
+     * @throws IOException
+     *             if any I/O error.
+     */
+    protected static String readInput(InputStream is) throws IOException {
+
+	BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+	StringBuffer dataRead = new StringBuffer();
+
+	for (String line = rd.readLine(); line != null; line = rd.readLine()) {
+	    dataRead.append(line);
+	    dataRead.append('\n');
+	}
+
+	return dataRead.toString();
     }
 
 }
