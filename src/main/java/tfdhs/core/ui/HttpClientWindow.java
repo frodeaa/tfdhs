@@ -3,6 +3,7 @@ package tfdhs.core.ui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.Map.Entry;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
@@ -79,8 +80,8 @@ public class HttpClientWindow implements ClientWindow,
 
     }
 
-    protected void updateUrlPropertyDocumentListener(final ClientModel model,
-	    final JTextComponent text) {
+    protected DocumentListener updateUrlPropertyDocumentListener(
+	    final ClientModel model, final JTextComponent text) {
 
 	DocumentListener listener = new javax.swing.event.DocumentListener() {
 
@@ -101,10 +102,11 @@ public class HttpClientWindow implements ClientWindow,
 	};
 
 	text.getDocument().addDocumentListener(listener);
+	return listener;
 
     }
 
-    protected void methodChangeListener(final ClientModel model,
+    protected ItemListener methodChangeListener(final ClientModel model,
 	    final JComboBox combobox) {
 
 	ItemListener listener = new ItemListener() {
@@ -116,11 +118,12 @@ public class HttpClientWindow implements ClientWindow,
 	};
 
 	combobox.addItemListener(listener);
+	return listener;
 
     }
 
-    protected void followRedirectsChangeListener(final ClientModel model,
-	    final JCheckBox checkBox) {
+    protected ChangeListener followRedirectsChangeListener(
+	    final ClientModel model, final JCheckBox checkBox) {
 
 	ChangeListener listener = new javax.swing.event.ChangeListener() {
 
@@ -132,10 +135,11 @@ public class HttpClientWindow implements ClientWindow,
 	};
 
 	checkBox.addChangeListener(listener);
+	return listener;
 
     }
 
-    protected void bodyInputChangeListener(JCheckBox checkBox) {
+    protected ChangeListener bodyInputChangeListener(JCheckBox checkBox) {
 
 	ChangeListener listener = new javax.swing.event.ChangeListener() {
 
@@ -149,11 +153,12 @@ public class HttpClientWindow implements ClientWindow,
 	};
 
 	checkBox.addChangeListener(listener);
+	return listener;
 
     }
 
-    protected void updateBodyDocumentListener(final ClientModel model,
-	    final JTextComponent text) {
+    protected DocumentListener updateBodyDocumentListener(
+	    final ClientModel model, final JTextComponent text) {
 
 	DocumentListener listener = new javax.swing.event.DocumentListener() {
 
@@ -174,10 +179,10 @@ public class HttpClientWindow implements ClientWindow,
 	};
 
 	text.getDocument().addDocumentListener(listener);
-
+	return listener;
     }
 
-    protected void sendRequestAction(final ClientController controller,
+    protected Action sendRequestAction(final ClientController controller,
 	    AbstractButton button) {
 
 	Action sendRequest = new AbstractAction() {
@@ -197,10 +202,11 @@ public class HttpClientWindow implements ClientWindow,
 	};
 
 	button.addActionListener(sendRequest);
+	return sendRequest;
 
     }
 
-    protected void viewRequestAction(final ClientController controller,
+    protected Action viewRequestAction(final ClientController controller,
 	    final AbstractButton button) {
 
 	Action action = new AbstractAction(button.getText()) {
@@ -212,10 +218,11 @@ public class HttpClientWindow implements ClientWindow,
 	};
 
 	button.setAction(action);
+	return action;
 
     }
 
-    protected void viewResponseAction(final ClientController controller,
+    protected Action viewResponseAction(final ClientController controller,
 	    final AbstractButton button) {
 
 	Action action = new AbstractAction(button.getText()) {
@@ -227,11 +234,35 @@ public class HttpClientWindow implements ClientWindow,
 	};
 
 	button.setAction(action);
+	return action;
 
     }
 
     @Override
     public void viewRequest(HttpRequest request) {
+	viewButtonGroup.setSelected(viewRequestButton.getModel(), true);
+
+	StringBuilder requestText = new StringBuilder();
+
+	String url = request.getUrl();
+	if (url != null && !url.isEmpty()) {
+
+	    requestText.append(request.getMethod());
+	    requestText.append(' ');
+	    requestText.append(url);
+
+	    for (Entry<String, String> header : request.getHeaders().entrySet()) {
+		requestText.append(String.format("%s: %s\n", header.getKey(),
+			header.getValue()));
+	    }
+
+	    requestText.append("\n\n");
+	    String body = request.getBody();
+	    requestText.append(body == null ? "" : body);
+
+	}
+
+	viewTextPane.setText(requestText.toString());
 
     }
 
@@ -241,23 +272,23 @@ public class HttpClientWindow implements ClientWindow,
 
 	if (response.getStatus() > 0) {
 
-	    // if (response.getHeaders().containsKey(null)) {
-	    // responseText.append(String.format("%s\n", response.getHeaders()
-	    // .get(null)));
-	    // }
-	    //
-	    // for (Entry<String, String> header : response.getHeaders()
-	    // .entrySet()) {
-	    // if (header.getKey() == null) {
-	    // continue;
-	    // }
-	    // responseText.append(String.format("%s: %s\n", header.getKey(),
-	    // header.getValue()));
-	    // }
-	    // responseText.append("\n");
-	    // String body = response.getBody();
-	    // responseText.append(body == null ? "" : body);
-	    // viewTextPane.setCaretPosition(0);
+	    if (response.getHeaders().containsKey(null)) {
+		responseText.append(String.format("%s\n", response.getHeaders()
+			.get(null)));
+	    }
+
+	    for (Entry<String, String> header : response.getHeaders()
+		    .entrySet()) {
+		if (header.getKey() == null) {
+		    continue;
+		}
+		responseText.append(String.format("%s: %s\n", header.getKey(),
+			header.getValue()));
+	    }
+	    responseText.append("\n");
+	    String body = response.getBody();
+	    responseText.append(body == null ? "" : body);
+	    viewTextPane.setCaretPosition(0);
 	}
 
 	viewTextPane.setText(responseText.toString());
