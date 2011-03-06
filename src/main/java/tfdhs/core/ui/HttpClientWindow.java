@@ -1,9 +1,24 @@
 package tfdhs.core.ui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+
+import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
+import javax.swing.Action;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.JTextComponent;
 
 import tfdhs.api.Builder;
+import tfdhs.api.HttpMethod;
 import tfdhs.api.HttpRequest;
 import tfdhs.api.HttpResponse;
 import tfdhs.core.ClientController;
@@ -31,7 +46,23 @@ public class HttpClientWindow implements ClientWindow,
 
     @Override
     public void bind(ClientController controller) {
-	// TODO Auto-generated method stub
+
+	methodComboBox.setModel(new javax.swing.DefaultComboBoxModel(HttpMethod
+		.values()));
+
+	ClientModel model = controller.getModel();
+
+	resetView(model);
+
+	updateUrlPropertyDocumentListener(model, urlField);
+	methodChangeListener(model, methodComboBox);
+	followRedirectsChangeListener(model, followRedirectsCheckBox);
+	bodyInputChangeListener(selectBodyBox);
+	updateBodyDocumentListener(model, bodyTextArea);
+	sendRequestAction(controller, sendButton);
+
+	viewRequestAction(controller, viewRequestButton);
+	viewResponseAction(controller, viewResponseButton);
 
     }
 
@@ -45,6 +76,157 @@ public class HttpClientWindow implements ClientWindow,
 	selectBodyBox.setSelected(model.isBodySet());
 	bodyTextArea.setText(model.getBody());
 	viewButtonGroup.setSelected(viewRequestButton.getModel(), true);
+
+    }
+
+    protected void updateUrlPropertyDocumentListener(final ClientModel model,
+	    final JTextComponent text) {
+
+	DocumentListener listener = new javax.swing.event.DocumentListener() {
+
+	    @Override
+	    public void removeUpdate(javax.swing.event.DocumentEvent event) {
+		changedUpdate(event);
+	    }
+
+	    @Override
+	    public void insertUpdate(javax.swing.event.DocumentEvent event) {
+		changedUpdate(event);
+	    }
+
+	    @Override
+	    public void changedUpdate(javax.swing.event.DocumentEvent event) {
+		model.setUrl(text.getText());
+	    }
+	};
+
+	text.getDocument().addDocumentListener(listener);
+
+    }
+
+    protected void methodChangeListener(final ClientModel model,
+	    final JComboBox combobox) {
+
+	ItemListener listener = new ItemListener() {
+
+	    @Override
+	    public void itemStateChanged(ItemEvent event) {
+		model.setMethod((HttpMethod) combobox.getSelectedObjects()[0]);
+	    }
+	};
+
+	combobox.addItemListener(listener);
+
+    }
+
+    protected void followRedirectsChangeListener(final ClientModel model,
+	    final JCheckBox checkBox) {
+
+	ChangeListener listener = new javax.swing.event.ChangeListener() {
+
+	    @Override
+	    public void stateChanged(javax.swing.event.ChangeEvent e) {
+		model.setFollowRedirects(checkBox.isSelected());
+	    }
+
+	};
+
+	checkBox.addChangeListener(listener);
+
+    }
+
+    protected void bodyInputChangeListener(JCheckBox checkBox) {
+
+	ChangeListener listener = new javax.swing.event.ChangeListener() {
+
+	    @Override
+	    public void stateChanged(javax.swing.event.ChangeEvent e) {
+		bodyTextArea.setText("");
+		bodyScrollPane.setVisible(selectBodyBox.isSelected());
+		panel.validate();
+	    }
+
+	};
+
+	checkBox.addChangeListener(listener);
+
+    }
+
+    protected void updateBodyDocumentListener(final ClientModel model,
+	    final JTextComponent text) {
+
+	DocumentListener listener = new javax.swing.event.DocumentListener() {
+
+	    @Override
+	    public void removeUpdate(javax.swing.event.DocumentEvent event) {
+		changedUpdate(event);
+	    }
+
+	    @Override
+	    public void insertUpdate(javax.swing.event.DocumentEvent event) {
+		changedUpdate(event);
+	    }
+
+	    @Override
+	    public void changedUpdate(javax.swing.event.DocumentEvent event) {
+		model.setBody(text.getText());
+	    }
+	};
+
+	text.getDocument().addDocumentListener(listener);
+
+    }
+
+    protected void sendRequestAction(final ClientController controller,
+	    AbstractButton button) {
+
+	Action sendRequest = new AbstractAction() {
+
+	    @Override
+	    public void actionPerformed(ActionEvent arg0) {
+		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+
+		    @Override
+		    protected Void doInBackground() throws Exception {
+			controller.sendRequest();
+			return null;
+		    }
+		};
+		SwingUtilities.invokeLater(worker);
+	    }
+	};
+
+	button.addActionListener(sendRequest);
+
+    }
+
+    protected void viewRequestAction(final ClientController controller,
+	    final AbstractButton button) {
+
+	Action action = new AbstractAction(button.getText()) {
+
+	    @Override
+	    public void actionPerformed(ActionEvent arg0) {
+		controller.viewRequest();
+	    }
+	};
+
+	button.setAction(action);
+
+    }
+
+    protected void viewResponseAction(final ClientController controller,
+	    final AbstractButton button) {
+
+	Action action = new AbstractAction(button.getText()) {
+
+	    @Override
+	    public void actionPerformed(ActionEvent arg0) {
+		controller.viewResponse();
+	    }
+	};
+
+	button.setAction(action);
 
     }
 

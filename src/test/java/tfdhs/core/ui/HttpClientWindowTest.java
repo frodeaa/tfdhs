@@ -44,6 +44,8 @@ public class HttpClientWindowTest {
     @Test
     public void bind() {
 
+	when(mockController.getModel()).thenReturn(model);
+
 	window.bind(mockController);
 
     }
@@ -51,9 +53,12 @@ public class HttpClientWindowTest {
     @Test
     public void resetView() {
 
-	window.resetView(model);
-	JPanel parent = window.build();
+	when(mockController.getModel()).thenReturn(model);
+	window.bind(mockController);
 
+	window.resetView(model);
+
+	JPanel parent = window.build();
 	assertUrlField(parent);
 	assertMethodBox(parent);
 	assertFollowRedirects(parent);
