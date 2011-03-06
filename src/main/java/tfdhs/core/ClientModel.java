@@ -90,4 +90,10 @@ public class ClientModel {
 	this.bodySet = bodySet;
     }
 
+    @Override
+    public String toString() {
+	return "ClientModel [url=" + url + ", method=" + method
+		+ ", followRedirects=" + followRedirects + "]";
+    }
+
 }

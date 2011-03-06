@@ -43,6 +43,6 @@ public interface ClientWindow {
      * @param response
      *            the response to show details about.
      */
-    void viewResonse(HttpResponse response);
+    void viewResponse(HttpResponse response);
 
 }
