@@ -238,7 +238,8 @@ public class HttpClientWindowTest {
 
 	when(mockComponent.getDocument()).thenReturn(mockDocument);
 
-	DocumentListener listener = window.updateUrlPropertyDocumentListener(
+	DocumentListener listener = HttpClientWindow
+		.updateUrlPropertyDocumentListener(
 		model, mockComponent);
 
 	verify(mockDocument).addDocumentListener(listener);
@@ -265,7 +266,7 @@ public class HttpClientWindowTest {
 
 	when(mockComponent.getDocument()).thenReturn(mockDocument);
 
-	DocumentListener listener = window.updateBodyDocumentListener(model,
+	DocumentListener listener = HttpClientWindow.updateBodyDocumentListener(model,
 		mockComponent);
 
 	verify(mockDocument).addDocumentListener(listener);

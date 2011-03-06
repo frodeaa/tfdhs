@@ -86,7 +86,7 @@ public class ClientWindowControllerTest {
 	verify(mockModel, atLeast(2)).getMethod();
 
     }
-
+    
     @Test
     public void testSendRequestModelUpdated() {
 
