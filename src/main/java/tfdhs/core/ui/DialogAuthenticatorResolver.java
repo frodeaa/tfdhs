@@ -27,7 +27,7 @@ public class DialogAuthenticatorResolver extends Authenticator implements
 	AuthenticatorResolver {
 
     private final Window parent;
-    private String INFO_AUTH_FORMAT = "To access this page, you must log in to \"%s\" on %s.\"";
+    private String INFO_AUTH_FORMAT = "To access this page, you must log in to \"%s\" on \"%s\".";
 
     /**
      * Create a new Authenticator resolver.
@@ -45,6 +45,7 @@ public class DialogAuthenticatorResolver extends Authenticator implements
 	informationTextArea.setName("informationTextArea");
 	informationTextArea.setLineWrap(true);
 	informationTextArea.setOpaque(false);
+	informationTextArea.setEditable(false);
 
 	usernameField = new JTextField(20);
 	usernameField.setName("usernameField");
