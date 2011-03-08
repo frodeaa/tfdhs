@@ -6,7 +6,6 @@ Tool for testing HTTP services.
 
 ## Known Issues 
 
- - No basic authentication support
  - No header field support
  - No highlight syntax in request/response fields
  - No support for saving request to file
