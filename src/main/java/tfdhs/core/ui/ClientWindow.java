@@ -45,4 +45,13 @@ public interface ClientWindow {
      */
     void viewResponse(HttpResponse response);
 
+    /**
+     * Request the Client to include authentication details in a model.
+     * 
+     * @param model
+     *            the model to update with authentication credentials.
+     * @return true if the update was a success, otherwise <code>false</code>.
+     */
+    boolean authenticate(ClientModel model);
+
 }

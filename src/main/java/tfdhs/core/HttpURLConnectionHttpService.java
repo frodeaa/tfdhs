@@ -10,13 +10,12 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import tfdhs.api.Builder;
 import tfdhs.api.HttpBuilder;
+import tfdhs.api.HttpMethod;
 import tfdhs.api.HttpRequest;
 import tfdhs.api.HttpResponse;
 import tfdhs.api.HttpService;
@@ -49,7 +48,7 @@ public class HttpURLConnectionHttpService implements HttpService {
 	int status = -1;
 	String message = null;
 	String response = null;
-	Map<String, String> responseHeaders = Collections.emptyMap();
+	Map<String, List<String>> responseHeaders = Collections.emptyMap();
 	try {
 	    HttpURLConnection.setFollowRedirects(request.isFollowRedirects());
 	    connection = newConnection(request);
@@ -60,6 +59,7 @@ public class HttpURLConnectionHttpService implements HttpService {
 	    response = readResponse(connection);
 	    responseHeaders = readHeaders(connection);
 	} catch (IOException e) {
+	    e.printStackTrace();
 	    //
 	} finally {
 	    if (connection != null) {
@@ -84,9 +84,10 @@ public class HttpURLConnectionHttpService implements HttpService {
 	    HttpRequest request) throws IOException {
 
 	connection.setRequestMethod(request.getMethod().name());
+	connection.setAllowUserInteraction(true);
 
 	String body = request.getBody();
-	if (body != null) {
+	if (body != null && !request.getMethod().equals(HttpMethod.OPTIONS)) {
 	    connection.setRequestProperty("Content-Length",
 		    "" + Integer.toString(body.getBytes().length));
 	    connection.setDoOutput(true);
@@ -108,7 +109,7 @@ public class HttpURLConnectionHttpService implements HttpService {
      * @return new HttpResponse craeted from parameters.
      */
     protected HttpResponse asHttpResponse(int status, String message,
-	    String response, Map<String, String> responseHeaders) {
+	    String response, Map<String, List<String>> responseHeaders) {
 
 	Builder.Response<HttpResponse> responseBuilder = builder
 		.newResponse(status).message(message)
@@ -162,18 +163,9 @@ public class HttpURLConnectionHttpService implements HttpService {
 	return readInput(is);
     }
 
-    protected static Map<String, String> readHeaders(
+    protected static Map<String, List<String>> readHeaders(
 	    HttpURLConnection connection) {
-
-	final Map<String, List<String>> responseHeaders = connection
-		.getHeaderFields();
-
-	final Map<String, String> headers = new HashMap<String, String>();
-	for (Entry<String, List<String>> header : responseHeaders.entrySet()) {
-	    headers.put(header.getKey(), flattenList(header.getValue()));
-	}
-
-	return headers;
+	return connection.getHeaderFields();
     }
 
     /**

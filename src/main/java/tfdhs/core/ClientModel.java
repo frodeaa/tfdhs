@@ -1,7 +1,7 @@
 package tfdhs.core;
 
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
+import java.util.List;
+import java.util.Map;
 
 import tfdhs.api.HttpMethod;
 
@@ -13,28 +13,17 @@ import tfdhs.api.HttpMethod;
  */
 public class ClientModel {
 
-    private static final Class<?>[] HEADER_TYPES = new Class[] {
-	    java.lang.String.class, java.lang.String.class };
     private String url;
-    private TableModel headers;
     private HttpMethod method;
     private boolean followRedirects;
     private boolean bodySet;
     private String body;
+    private Map<String, List<String>> headerFields;
 
     /**
      * Create a new Model, ready for GET request.
      */
     public ClientModel() {
-	setUrl(null);
-	setHeaders(new DefaultTableModel(new String[] { "Header Name",
-		"Header Value" }, 0) {
-
-	    public Class<?> getColumnClass(int columnIndex) {
-		return HEADER_TYPES[columnIndex];
-	    }
-	});
-
 	setUrl(null);
 	setFollowRedirects(false);
 	setMethod(HttpMethod.GET);
@@ -48,14 +37,6 @@ public class ClientModel {
 
     public void setUrl(String url) {
 	this.url = url;
-    }
-
-    public TableModel getHeaders() {
-	return headers;
-    }
-
-    public void setHeaders(TableModel headers) {
-	this.headers = headers;
     }
 
     public HttpMethod getMethod() {

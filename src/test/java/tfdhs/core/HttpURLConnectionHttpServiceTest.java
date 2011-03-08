@@ -141,7 +141,7 @@ public class HttpURLConnectionHttpServiceTest {
 		.thenReturn(mockResponseBuilder);
 
 	Map<String, List<String>> noResponseHeaders = Collections.emptyMap();
-	Map<String, String> noHeaders = Collections.emptyMap();
+	Map<String, List<String>> noHeaders = Collections.emptyMap();
 	when(mockConnection.getHeaderFields()).thenReturn(noResponseHeaders);
 	when(mockResponseBuilder.headers(noHeaders)).thenReturn(
 		mockResponseBuilder);
@@ -172,7 +172,7 @@ public class HttpURLConnectionHttpServiceTest {
 	    }
 	};
 
-	Map<String, String> noHeaders = Collections.emptyMap();
+	Map<String, List<String>> noHeaders = Collections.emptyMap();
 
 	when(mockRequest.getMethod()).thenReturn(HttpMethod.GET);
 
@@ -241,7 +241,7 @@ public class HttpURLConnectionHttpServiceTest {
 	@SuppressWarnings("unchecked")
 	final Builder.Response<HttpResponse> mockResponseBuilder = mock(Builder.Response.class);
 	final HttpResponse mockResponse = mock(HttpResponse.class);
-	final Map<String, String> noHeaders = Collections.emptyMap();
+	final Map<String, List<String>> noHeaders = Collections.emptyMap();
 
 	service = new HttpURLConnectionHttpService(mockBuilder) {
 
@@ -271,7 +271,7 @@ public class HttpURLConnectionHttpServiceTest {
 	@SuppressWarnings("unchecked")
 	final Builder.Response<HttpResponse> mockResponseBuilder = mock(Builder.Response.class);
 	final HttpResponse mockResponse = mock(HttpResponse.class);
-	final Map<String, String> noHeaders = Collections.emptyMap();
+	final Map<String, List<String>> noHeaders = Collections.emptyMap();
 
 	service = new HttpURLConnectionHttpService(mockBuilder) {
 
@@ -372,15 +372,17 @@ public class HttpURLConnectionHttpServiceTest {
 
 	when(mockConnection.getHeaderFields()).thenReturn(headers);
 
-	Map<String, String> result = HttpURLConnectionHttpService
+	Map<String, List<String>> result = HttpURLConnectionHttpService
 		.readHeaders(mockConnection);
 
 	assertNotNull("Header map null", result);
 	assertTrue("Missing header", result.containsKey("content"));
-	assertEquals("Missing value", "word word", result.get("content"));
+	assertEquals("Missing value", Collections.nCopies(2, "word"),
+		result.get("content"));
 
 	assertTrue("Missing header", result.containsKey("time"));
-	assertEquals("Missing value", "clock", result.get("time"));
+	assertEquals("Missing value", Collections.singletonList("clock"),
+		result.get("time"));
 
 	verify(mockConnection).getHeaderFields();
 

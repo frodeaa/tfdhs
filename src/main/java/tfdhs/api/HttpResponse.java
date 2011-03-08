@@ -1,5 +1,6 @@
 package tfdhs.api;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,7 +25,7 @@ public interface HttpResponse {
      * 
      * @return Map over the header fields.
      */
-    Map<String, String> getHeaders();
+    Map<String, List<String>> getHeaders();
 
     /**
      * @return the data returned in the response.

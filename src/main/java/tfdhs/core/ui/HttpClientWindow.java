@@ -3,6 +3,7 @@ package tfdhs.core.ui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.List;
 import java.util.Map.Entry;
 
 import javax.swing.AbstractAction;
@@ -74,7 +75,7 @@ public class HttpClientWindow implements ClientWindow,
 	urlField.setText(model.getUrl());
 	methodComboBox.setSelectedItem(model.getMethod());
 	followRedirectsCheckBox.setSelected(model.isFollowRedirects());
-	headersTable.setModel(model.getHeaders());
+	// headersTable.setModel(model.getHeaders());
 	selectBodyBox.setSelected(model.isBodySet());
 	bodyTextArea.setText(model.getBody());
 	viewButtonGroup.setSelected(viewRequestButton.getModel(), true);
@@ -168,7 +169,8 @@ public class HttpClientWindow implements ClientWindow,
 	    requestText.append(' ');
 	    requestText.append(url);
 
-	    for (Entry<String, String> header : request.getHeaders().entrySet()) {
+	    for (Entry<String, List<String>> header : request.getHeaders()
+		    .entrySet()) {
 		requestText.append(String.format("%s: %s\n", header.getKey(),
 			header.getValue()));
 	    }
@@ -194,7 +196,7 @@ public class HttpClientWindow implements ClientWindow,
 			.get(null)));
 	    }
 
-	    for (Entry<String, String> header : response.getHeaders()
+	    for (Entry<String, List<String>> header : response.getHeaders()
 		    .entrySet()) {
 		if (header.getKey() == null) {
 		    continue;
@@ -209,6 +211,14 @@ public class HttpClientWindow implements ClientWindow,
 
 	viewTextPane.setText(responseText.toString());
 	viewTextPane.setCaretPosition(0);
+    }
+
+    @Override
+    public boolean authenticate(ClientModel model) {
+
+	// model.getHeaders().set
+
+	return false; // no authentication provided
     }
 
     private void initComponents() {

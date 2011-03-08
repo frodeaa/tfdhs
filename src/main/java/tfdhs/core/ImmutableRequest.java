@@ -1,6 +1,7 @@
 package tfdhs.core;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import tfdhs.api.HttpMethod;
@@ -16,12 +17,12 @@ public class ImmutableRequest implements HttpRequest {
 
     private final boolean followRedirects;
     private final String body;
-    private final Map<String, String> headers;
+    private final Map<String, List<String>> headers;
     private final HttpMethod method;
     private final String url;
 
     public ImmutableRequest(String url, HttpMethod method,
-	    Map<String, String> headers, String body, boolean followRedirects) {
+	    Map<String, List<String>> headers, String body, boolean followRedirects) {
 	super();
 	this.url = url;
 	this.method = method;
@@ -44,7 +45,7 @@ public class ImmutableRequest implements HttpRequest {
 	return body;
     }
 
-    public Map<String, String> getHeaders() {
+    public Map<String, List<String>> getHeaders() {
 	return headers;
     }
 

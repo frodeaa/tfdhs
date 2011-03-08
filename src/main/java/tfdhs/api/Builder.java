@@ -1,5 +1,6 @@
 package tfdhs.api;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -53,7 +54,7 @@ public interface Builder<E> {
 	 *            the HTTP header fields.
 	 * @return the builder.
 	 */
-	Request<E> headers(Map<String, String> headers);
+	Request<E> headers(Map<String, List<String>> headers);
 
     }
 
@@ -93,7 +94,7 @@ public interface Builder<E> {
 	 *            the HTTP header fields.
 	 * @return the builder.
 	 */
-	Response<E> headers(Map<String, String> headers);
+	Response<E> headers(Map<String, List<String>> headers);
     }
 
 }

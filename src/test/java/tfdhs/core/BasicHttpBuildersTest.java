@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
@@ -57,7 +58,8 @@ public class BasicHttpBuildersTest {
 
 	Builder.Response<HttpResponse> reqBuilder = builder.newResponse(-1);
 
-	Map<String, String> headers = Collections.singletonMap("time", "now");
+	Map<String, List<String>> headers = Collections.singletonMap("time",
+		Collections.singletonList("now"));
 	HttpResponse response = reqBuilder.body("body").headers(headers)
 		.message("message").status(220).build();
 
@@ -90,7 +92,8 @@ public class BasicHttpBuildersTest {
 	Builder.Request<HttpRequest> reqBuilder = builder.newRequest("someurl",
 		HttpMethod.HEAD);
 
-	Map<String, String> headers = Collections.singletonMap("time", "now");
+	Map<String, List<String>> headers = Collections.singletonMap("time",
+		Collections.singletonList("now"));
 	HttpRequest request = reqBuilder.body("body").headers(headers)
 		.followRedirects(true).url("someUrl").build();
 

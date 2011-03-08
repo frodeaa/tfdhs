@@ -1,6 +1,7 @@
 package tfdhs.core;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import tfdhs.api.HttpResponse;
@@ -15,11 +16,11 @@ public class ImmutableResponse implements HttpResponse {
 
     private final int status;
     private final String message;
-    private final Map<String, String> headers;
+    private final Map<String, List<String>> headers;
     private final String body;
 
     public ImmutableResponse(int status, String message,
-	    Map<String, String> headers, String body) {
+	    Map<String, List<String>> headers, String body) {
 	super();
 	this.status = status;
 	this.message = message;
@@ -47,7 +48,7 @@ public class ImmutableResponse implements HttpResponse {
      * {@inheritDoc}
      */
     @Override
-    public Map<String, String> getHeaders() {
+    public Map<String, List<String>> getHeaders() {
 	return headers;
     }
 

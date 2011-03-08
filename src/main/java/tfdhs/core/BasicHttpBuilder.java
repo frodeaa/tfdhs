@@ -1,6 +1,7 @@
 package tfdhs.core;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import tfdhs.api.Builder;
@@ -36,7 +37,7 @@ public class BasicHttpBuilder implements HttpBuilder {
 
 	String url;
 	HttpMethod method;
-	Map<String, String> headers = Collections.emptyMap();
+	Map<String, List<String>> headers = Collections.emptyMap();
 	String body = null;
 	boolean followRedirects = false;
 
@@ -64,7 +65,7 @@ public class BasicHttpBuilder implements HttpBuilder {
 	}
 
 	public tfdhs.api.Builder.Request<HttpRequest> headers(
-		Map<String, String> headers) {
+		Map<String, List<String>> headers) {
 	    this.headers = headers;
 	    return this;
 	}
@@ -88,7 +89,7 @@ public class BasicHttpBuilder implements HttpBuilder {
 
 	private int statusCode;
 	private String message = null;
-	private Map<String, String> headers = Collections.emptyMap();
+	private Map<String, List<String>> headers = Collections.emptyMap();
 	private String body;
 
 	HttpResponseBuilder(int status) {
@@ -101,7 +102,7 @@ public class BasicHttpBuilder implements HttpBuilder {
 	}
 
 	public tfdhs.api.Builder.Response<HttpResponse> headers(
-		Map<String, String> headers) {
+		Map<String, List<String>> headers) {
 	    this.headers = headers;
 	    return this;
 	}
