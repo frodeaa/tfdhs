@@ -39,14 +39,17 @@ public class DialogAuthenticatorResolver implements AuthenticatorResolver {
 
     private void initComponents() {
 	usernameField = new JTextField(20);
-	passwordField = new JPasswordField(20);
-	optionPane = new JOptionPane(new Object[] {
+	usernameField.setName("usernameField");
 
-	layout(2, new JLabel("Username:"), usernameField, new JLabel(
-		"Password:"), passwordField) }, JOptionPane.PLAIN_MESSAGE,
+	passwordField = new JPasswordField(20);
+	passwordField.setName("passwordField");
+
+	inputPane = new JOptionPane(new Object[] { layout(2, new JLabel(
+		"Username:"), usernameField, new JLabel("Password:"),
+		passwordField) }, JOptionPane.PLAIN_MESSAGE,
 		JOptionPane.OK_CANCEL_OPTION);
 
-	dialog = optionPane.createDialog(parent,
+	dialog = inputPane.createDialog(parent,
 		"Username and password required");
     }
 
@@ -56,11 +59,10 @@ public class DialogAuthenticatorResolver implements AuthenticatorResolver {
     @Override
     public PasswordAuthentication authenticate(Authenticator authenticator) {
 
-	dialog.setVisible(true);
-	dialog.dispose();
+	getDialog().setVisible(true);
+	getDialog().dispose();
 
-	int value = ((Integer) optionPane.getValue()).intValue();
-	if (value == JOptionPane.OK_OPTION) {
+	if (userClickedOk()) {
 	    return new PasswordAuthentication(usernameField.getText(),
 		    passwordField.getPassword());
 	}
@@ -87,9 +89,31 @@ public class DialogAuthenticatorResolver implements AuthenticatorResolver {
 	return panel;
     }
 
+    protected boolean userClickedOk() {
+	return getInputPane().getValue() != JOptionPane.UNINITIALIZED_VALUE
+		&& ((Integer) getInputPane().getValue()).intValue() == JOptionPane.OK_OPTION;
+
+    }
+
+    protected JOptionPane getInputPane() {
+	return inputPane;
+    }
+
+    protected JDialog getDialog() {
+	return dialog;
+    }
+
+    protected void setUsername(String username) {
+	usernameField.setText(username);
+    }
+
+    protected void setPassword(String password) {
+	passwordField.setText(password);
+    }
+
     private JTextField usernameField;
     private JPasswordField passwordField;
-    private JOptionPane optionPane;
+    private JOptionPane inputPane;
     private JDialog dialog;
 
 }
