@@ -71,6 +71,14 @@ public class ClientModel {
 	this.bodySet = bodySet;
     }
 
+    public Map<String, List<String>> getHeaderFields() {
+	return headerFields;
+    }
+
+    public void setHeaderFields(Map<String, List<String>> headerFields) {
+	this.headerFields = headerFields;
+    }
+
     @Override
     public String toString() {
 	return "ClientModel [url=" + url + ", method=" + method
