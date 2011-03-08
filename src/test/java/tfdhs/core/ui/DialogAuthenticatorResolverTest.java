@@ -1,26 +1,26 @@
 package tfdhs.core.ui;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static tfdhs.core.ui.HttpClientWindowTest.getChildNamed;
+
 import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Window;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 
-import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.Mockito.*;
-import tfdhs.api.AuthenticatorResolver;
-import static org.junit.Assert.*;
-import static tfdhs.core.ui.HttpClientWindowTest.getChildNamed;
 
 /**
  * Display a dialog where the user can enter username/password.
