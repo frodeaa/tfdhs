@@ -17,6 +17,7 @@ import java.net.PasswordAuthentication;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import org.junit.Before;
@@ -56,8 +57,15 @@ public class DialogAuthenticatorResolverTest {
     }
 
     @Test
+    public void assertInformationTextArea() {
+	Component comp = getChildNamed(resolver.getDialog(), "informationTextArea");
+
+	assertTrue("Missing informationTextArea in dialog",
+		comp instanceof JTextArea);
+    }
+
+    @Test
     public void testAuthenticateDialogShown() {
-	final Authenticator mockAuthenticator = mock(Authenticator.class);
 	final JDialog mockDialog = mock(JDialog.class);
 	resolver = new DialogAuthenticatorResolver(null) {
 	    protected JDialog getDialog() {
@@ -65,7 +73,7 @@ public class DialogAuthenticatorResolverTest {
 	    }
 	};
 
-	resolver.authenticate(mockAuthenticator);
+	resolver.authenticate();
 
 	verify(mockDialog).setVisible(true);
 	verify(mockDialog).dispose();
@@ -74,7 +82,6 @@ public class DialogAuthenticatorResolverTest {
 
     @Test
     public void testAuthenticateDialogOkClicked() {
-	final Authenticator mockAuthenticator = mock(Authenticator.class);
 	final JDialog mockDialog = mock(JDialog.class);
 	resolver = new DialogAuthenticatorResolver(null) {
 	    protected JDialog getDialog() {
@@ -89,7 +96,7 @@ public class DialogAuthenticatorResolverTest {
 	resolver.setUsername("username");
 	resolver.setPassword("password");
 
-	PasswordAuthentication auth = resolver.authenticate(mockAuthenticator);
+	PasswordAuthentication auth = resolver.authenticate();
 
 	assertNotNull("PasswordAuthentication was null", auth);
 	assertEquals("Username", "username", auth.getUserName());
@@ -99,7 +106,6 @@ public class DialogAuthenticatorResolverTest {
 
     @Test
     public void testAuthenticateDialogAborted() {
-	final Authenticator mockAuthenticator = mock(Authenticator.class);
 	final JDialog mockDialog = mock(JDialog.class);
 	resolver = new DialogAuthenticatorResolver(null) {
 	    protected JDialog getDialog() {
@@ -114,7 +120,7 @@ public class DialogAuthenticatorResolverTest {
 	resolver.setUsername("username");
 	resolver.setPassword("password");
 
-	PasswordAuthentication auth = resolver.authenticate(mockAuthenticator);
+	PasswordAuthentication auth = resolver.authenticate();
 
 	assertNull("PasswordAuthentication was not null", auth);
 

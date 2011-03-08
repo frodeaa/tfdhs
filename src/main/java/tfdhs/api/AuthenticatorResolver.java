@@ -1,6 +1,5 @@
 package tfdhs.api;
 
-import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 
 /**
@@ -18,6 +17,6 @@ public interface AuthenticatorResolver {
      *            the authenticator to provide credentials.
      * @return <code>null</code> if no credentials are available.
      */
-    PasswordAuthentication authenticate(Authenticator authenticator);
+    PasswordAuthentication authenticate();
 
 }
