@@ -213,13 +213,6 @@ public class HttpClientWindow implements ClientWindow,
 	viewTextPane.setCaretPosition(0);
     }
 
-    @Override
-    public boolean authenticate(ClientModel model) {
-
-	// model.getHeaders().set
-
-	return false; // no authentication provided
-    }
 
     private void initComponents() {
 	urlLabel = new javax.swing.JLabel();

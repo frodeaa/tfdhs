@@ -141,9 +141,8 @@ public class HttpURLConnectionHttpServiceTest {
 		.thenReturn(mockResponseBuilder);
 
 	Map<String, List<String>> noResponseHeaders = Collections.emptyMap();
-	Map<String, List<String>> noHeaders = Collections.emptyMap();
 	when(mockConnection.getHeaderFields()).thenReturn(noResponseHeaders);
-	when(mockResponseBuilder.headers(noHeaders)).thenReturn(
+	when(mockResponseBuilder.headers(noResponseHeaders)).thenReturn(
 		mockResponseBuilder);
 
 	when(mockResponseBuilder.build()).thenReturn(mockResponse);
@@ -312,6 +311,7 @@ public class HttpURLConnectionHttpServiceTest {
 	service.prepareConnection(mockConnection, mockRequest);
 
 	verify(mockConnection).setRequestMethod("POST");
+	verify(mockConnection).setAllowUserInteraction(true);
 	verify(mockConnection).setRequestProperty("Content-Length",
 		"body".getBytes().length + "");
 	verify(mockConnection).setDoOutput(true);
@@ -349,13 +349,8 @@ public class HttpURLConnectionHttpServiceTest {
     @Test
     public void testReadResponse() throws IOException {
 
-	HttpURLConnection mockConnection = mock(HttpURLConnection.class);
-
-	when(mockConnection.getInputStream()).thenReturn(
-		new ByteArrayInputStream("content".getBytes()));
-
 	String response = HttpURLConnectionHttpService
-		.readResponse(mockConnection);
+		.readResponse(new ByteArrayInputStream("content".getBytes()));
 
 	assertNotNull("Response null", response);
 	assertEquals("Response", "content\n", response);

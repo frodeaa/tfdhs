@@ -45,29 +45,29 @@ public class HttpURLConnectionHttpService implements HttpService {
     public HttpResponse sendHttpRequest(HttpRequest request) {
 
 	HttpURLConnection connection = null;
-	int status = -1;
-	String message = null;
-	String response = null;
-	Map<String, List<String>> responseHeaders = Collections.emptyMap();
 	try {
 	    HttpURLConnection.setFollowRedirects(request.isFollowRedirects());
 	    connection = newConnection(request);
 	    prepareConnection(connection, request);
-
-	    status = readStatus(connection);
-	    message = readMessage(connection);
-	    response = readResponse(connection);
-	    responseHeaders = readHeaders(connection);
+	    return asHttpResponse(readStatus(connection),
+		    readMessage(connection),
+		    readResponse(connection.getInputStream()),
+		    readHeaders(connection));
 	} catch (IOException e) {
-	    e.printStackTrace();
-	    //
+	    if (connection != null) {
+		return asHttpResponse(readStatus(connection),
+			readMessage(connection),
+			readResponse(connection.getErrorStream()),
+			readHeaders(connection));
+	    }
 	} finally {
 	    if (connection != null) {
 		connection.disconnect();
 	    }
 	}
 
-	return asHttpResponse(status, message, response, responseHeaders);
+	Map<String, List<String>> noHeaders = Collections.emptyMap();
+	return asHttpResponse(-1, null, "", noHeaders);
     }
 
     /**
@@ -87,7 +87,7 @@ public class HttpURLConnectionHttpService implements HttpService {
 	connection.setAllowUserInteraction(true);
 
 	String body = request.getBody();
-	if (body != null && !request.getMethod().equals(HttpMethod.OPTIONS)) {
+	if (body != null && HttpMethod.POST.equals(request.getMethod())) {
 	    connection.setRequestProperty("Content-Length",
 		    "" + Integer.toString(body.getBytes().length));
 	    connection.setDoOutput(true);
@@ -147,20 +147,28 @@ public class HttpURLConnectionHttpService implements HttpService {
 	return new URL(request.getUrl());
     }
 
-    protected static int readStatus(HttpURLConnection connection)
-	    throws IOException {
-	return connection.getResponseCode();
+    protected static int readStatus(HttpURLConnection connection) {
+	try {
+	    return connection.getResponseCode();
+	} catch (IOException e) {
+	    return -1;
+	}
     }
 
-    protected static String readMessage(HttpURLConnection connection)
-	    throws IOException {
-	return connection.getResponseMessage();
+    protected static String readMessage(HttpURLConnection connection) {
+	try {
+	    return connection.getResponseMessage();
+	} catch (IOException e) {
+	    return "";
+	}
     }
 
-    protected static String readResponse(HttpURLConnection connection)
-	    throws IOException {
-	InputStream is = connection.getInputStream();
-	return readInput(is);
+    protected static String readResponse(InputStream is) {
+	try {
+	    return readInput(is);
+	} catch (IOException e) {
+	    return "";
+	}
     }
 
     protected static Map<String, List<String>> readHeaders(

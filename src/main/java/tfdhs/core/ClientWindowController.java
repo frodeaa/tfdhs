@@ -39,13 +39,6 @@ public class ClientWindowController implements ClientController {
 
 	response = builder.newHttpService().sendHttpRequest(createRequest());
 
-	if (response.getStatus() == HTTP_UNAUTHORIZED) {
-	    if (window.authenticate(getModel())) {
-		response = builder.newHttpService().sendHttpRequest(
-			createRequest());
-	    }
-	}
-
 	System.out.println(response.getStatus());
 	System.out.println(response.getHeaders());
 	System.out.println(response.getMessage());
