@@ -1,6 +1,5 @@
 package tfdhs.core;
 
-import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,22 +35,15 @@ public class ClientWindowController implements ClientController {
 
     @Override
     public void sendRequest() {
-
 	response = builder.newHttpService().sendHttpRequest(createRequest());
-
-	System.out.println(response.getStatus());
-	System.out.println(response.getHeaders());
-	System.out.println(response.getMessage());
-	System.out.println(response.getBody());
-
 	viewRequest();
     }
 
     protected HttpRequest createRequest() {
-//	Map<String, String> headers = createHeaderFields(model.getHeaders());
+	// Map<String, String> headers = createHeaderFields(model.getHeaders());
 	return request = builder.newRequest(model.getUrl(), model.getMethod())
 		.body(model.getBody() == null ? "" : model.getBody())
-		.followRedirects(model.isFollowRedirects())/*.headers(headers)*/
+		.followRedirects(model.isFollowRedirects())/* .headers(headers) */
 		.build();
 
     }
