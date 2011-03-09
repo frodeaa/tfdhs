@@ -25,6 +25,7 @@ import tfdhs.api.HttpMethod;
 import tfdhs.api.HttpRequest;
 import tfdhs.api.HttpResponse;
 import tfdhs.core.ClientController;
+import tfdhs.core.ClientController.Viewstate;
 import tfdhs.core.ClientModel;
 
 /**
@@ -141,7 +142,8 @@ public class HttpClientWindow implements ClientWindow,
     protected static Action viewRequestAction(
 	    final ClientController controller, final AbstractButton button) {
 
-	Action action = new ViewRequestAction(button.getText(), controller);
+	Action action = new ViewAction(button.getText(), controller,
+		Viewstate.request);
 	button.setAction(action);
 	return action;
 
@@ -150,7 +152,8 @@ public class HttpClientWindow implements ClientWindow,
     protected static Action viewResponseAction(
 	    final ClientController controller, final AbstractButton button) {
 
-	Action action = new ViewResponseAction(button.getText(), controller);
+	Action action = new ViewAction(button.getText(), controller,
+		Viewstate.response);
 	button.setAction(action);
 	return action;
 
@@ -212,7 +215,6 @@ public class HttpClientWindow implements ClientWindow,
 	viewTextPane.setText(responseText.toString());
 	viewTextPane.setCaretPosition(0);
     }
-
 
     private void initComponents() {
 	urlLabel = new javax.swing.JLabel();
@@ -491,31 +493,26 @@ public class HttpClientWindow implements ClientWindow,
     private javax.swing.JToolBar viewToolbar;
     private javax.swing.ButtonGroup viewButtonGroup;
 
-    private static final class ViewResponseAction extends AbstractAction {
+    private static final class ViewAction extends AbstractAction {
 	private final ClientController controller;
+	private final Viewstate view;
 
-	private ViewResponseAction(String name, ClientController controller) {
+	private ViewAction(String name, ClientController controller,
+		Viewstate view) {
 	    super(name);
+	    this.view = view;
 	    this.controller = controller;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-	    controller.viewResponse();
-	}
-    }
+	    SwingUtilities.invokeLater(new Runnable() {
 
-    private static final class ViewRequestAction extends AbstractAction {
-	private final ClientController controller;
-
-	private ViewRequestAction(String arg0, ClientController controller) {
-	    super(arg0);
-	    this.controller = controller;
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-	    controller.viewRequest();
+		@Override
+		public void run() {
+		    controller.view(view);
+		}
+	    });
 	}
     }
 

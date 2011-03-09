@@ -8,6 +8,10 @@ package tfdhs.core;
  */
 public interface ClientController {
 
+    enum Viewstate {
+	request, response;
+    }
+
     /**
      * Send a request.
      */
@@ -24,14 +28,14 @@ public interface ClientController {
     void clearRequest();
 
     /**
-     * Update the view to show the request.
+     * Update the view to show the state.
      */
-    void viewRequest();
+    void view(Viewstate state);
 
-    /**
-     * Update the view to show the response.
-     */
-    void viewResponse();
+//    /**
+//     * Update the view to show the response.
+//     */
+//    void viewResponse();
 
     /**
      * 

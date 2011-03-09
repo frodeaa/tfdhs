@@ -13,6 +13,7 @@ import tfdhs.api.HttpBuilder;
 import tfdhs.api.HttpMethod;
 import tfdhs.api.HttpRequest;
 import tfdhs.api.HttpResponse;
+import tfdhs.core.ClientController.Viewstate;
 import tfdhs.core.ui.ClientWindow;
 
 public class ClientWindowControllerTest {
@@ -41,7 +42,7 @@ public class ClientWindowControllerTest {
     @Test
     public void testViewResponse() {
 
-	controller.viewResponse();
+	controller.view(Viewstate.response);
 
 	verify(mockWindow).viewResponse(any(HttpResponse.class));
 
@@ -50,7 +51,7 @@ public class ClientWindowControllerTest {
     @Test
     public void testViewRequest() {
 
-	controller.viewRequest();
+	controller.view(Viewstate.request);
 
 	verify(mockWindow).viewRequest(any(HttpRequest.class));
 
@@ -86,7 +87,7 @@ public class ClientWindowControllerTest {
 	verify(mockModel, atLeast(2)).getMethod();
 
     }
-    
+
     @Test
     public void testSendRequestModelUpdated() {
 

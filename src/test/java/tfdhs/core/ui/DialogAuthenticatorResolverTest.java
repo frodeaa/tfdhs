@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 import static tfdhs.core.ui.HttpClientWindowTest.getChildNamed;
 
 import java.awt.Component;
-import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 
 import javax.swing.JDialog;

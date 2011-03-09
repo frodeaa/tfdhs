@@ -23,6 +23,7 @@ public class ClientWindowController implements ClientController {
     private ClientModel model;
     private HttpRequest request;
     private HttpResponse response;
+    private Viewstate viewstate = Viewstate.request;
 
     public ClientWindowController(ClientModel model, ClientWindow window,
 	    HttpBuilder builder) {
@@ -36,7 +37,7 @@ public class ClientWindowController implements ClientController {
     @Override
     public void sendRequest() {
 	response = builder.newHttpService().sendHttpRequest(createRequest());
-	viewRequest();
+	view(viewstate);
     }
 
     protected HttpRequest createRequest() {
@@ -55,17 +56,20 @@ public class ClientWindowController implements ClientController {
 
     @Override
     public void clearRequest() {
+	viewstate = Viewstate.request;
 	window.resetView(model);
     }
 
     @Override
-    public void viewRequest() {
-	window.viewRequest(request);
-    }
+    public void view(Viewstate view) {
+	viewstate = view;
 
-    @Override
-    public void viewResponse() {
-	window.viewResponse(response);
+	if (Viewstate.request.equals(view)) {
+	    window.viewRequest(request);
+	} else {
+	    window.viewResponse(response);
+	}
+
     }
 
     @Override
