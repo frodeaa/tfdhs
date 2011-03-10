@@ -1,10 +1,5 @@
 package tfdhs.core;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.swing.table.TableModel;
-
 import tfdhs.api.HttpBuilder;
 import tfdhs.api.HttpRequest;
 import tfdhs.api.HttpResponse;
@@ -74,15 +69,6 @@ public class ClientWindowController implements ClientController {
     @Override
     public ClientModel getModel() {
 	return model;
-    }
-
-    protected static Map<String, String> createHeaderFields(TableModel table) {
-	Map<String, String> headers = new HashMap<String, String>();
-	for (int i = 0; i < table.getRowCount(); i++) {
-	    headers.put((String) table.getValueAt(i, 0),
-		    (String) table.getValueAt(i, 1));
-	}
-	return headers;
     }
 
 }
