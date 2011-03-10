@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.tfdhs</groupId>
 	<artifactId>tfdhs</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>tfdhs</name>
 	<description>Tool for debugging HTTP services.</description>
 	<dependencies>
