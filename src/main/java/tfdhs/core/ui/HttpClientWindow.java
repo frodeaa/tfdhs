@@ -1,12 +1,9 @@
 package tfdhs.core.ui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.List;
 import java.util.Map.Entry;
 
-import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -16,8 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextPane;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
@@ -29,6 +24,15 @@ import tfdhs.api.HttpResponse;
 import tfdhs.core.ClientController;
 import tfdhs.core.ClientController.Viewstate;
 import tfdhs.core.ClientModel;
+import tfdhs.core.ui.action.AddNewRowAction;
+import tfdhs.core.ui.action.RemoveSelectedRowAction;
+import tfdhs.core.ui.action.SendRequestAction;
+import tfdhs.core.ui.action.ViewAction;
+import tfdhs.core.ui.listeners.BodySelectChangeListener;
+import tfdhs.core.ui.listeners.BodyTextDocumentListener;
+import tfdhs.core.ui.listeners.FollowRedirectsChangeListener;
+import tfdhs.core.ui.listeners.MethodSelectListener;
+import tfdhs.core.ui.listeners.UrlFieldDocumentListener;
 
 /**
  * Client panel.
@@ -510,198 +514,5 @@ public class HttpClientWindow implements ClientWindow,
     private javax.swing.JToolBar viewToolbar;
     private javax.swing.ButtonGroup viewButtonGroup;
     private final ListValueMapTableModel tableModel;
-
-    private static final class RemoveSelectedRowAction extends AbstractAction {
-	private final ListValueMapTableModel model;
-	private final JTable table;
-
-	private RemoveSelectedRowAction(String name,
-		ListValueMapTableModel model, JTable table) {
-	    super(name);
-	    this.model = model;
-	    this.table = table;
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-	    int rowSelected = table.getSelectedRow();
-	    if (rowSelected > -1) {
-		model.removeRow(rowSelected);
-		int rowCount = model.getRowCount();
-		int newSelect = Math.min(Math.max(0, rowSelected - 1),
-			Math.min(rowSelected, rowCount));
-		if (rowCount > 0) {
-		    table.setRowSelectionInterval(newSelect, newSelect);
-		}
-	    }
-	}
-    }
-
-    private static final class AddNewRowAction extends AbstractAction {
-	private final ListValueMapTableModel model;
-	private final JTable table;
-
-	private AddNewRowAction(String arg0, ListValueMapTableModel model,
-		JTable table) {
-	    super(arg0);
-	    this.model = model;
-	    this.table = table;
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-	    int newRow = model.addRow();
-	    table.setRowSelectionInterval(newRow, newRow);
-	}
-    }
-
-    private static final class ViewAction extends AbstractAction {
-	private final ClientController controller;
-	private final Viewstate view;
-
-	private ViewAction(String name, ClientController controller,
-		Viewstate view) {
-	    super(name);
-	    this.view = view;
-	    this.controller = controller;
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-	    SwingUtilities.invokeLater(new Runnable() {
-
-		@Override
-		public void run() {
-		    controller.view(view);
-		}
-	    });
-	}
-    }
-
-    private static final class SendRequestAction extends AbstractAction {
-	private final ClientController controller;
-
-	private SendRequestAction(ClientController controller) {
-	    this.controller = controller;
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-	    SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
-
-		@Override
-		protected Void doInBackground() throws Exception {
-		    controller.sendRequest();
-		    return null;
-		}
-	    };
-	    SwingUtilities.invokeLater(worker);
-	}
-    }
-
-    private static final class BodySelectChangeListener implements
-	    javax.swing.event.ChangeListener {
-	private final JTextComponent bodyText;
-	private final JScrollPane bodyScollPane;
-	private final JCheckBox checkBox;
-
-	private BodySelectChangeListener(JTextComponent bodyText,
-		JScrollPane bodyScollPane, JCheckBox checkBox) {
-	    this.bodyText = bodyText;
-	    this.bodyScollPane = bodyScollPane;
-	    this.checkBox = checkBox;
-	}
-
-	@Override
-	public void stateChanged(javax.swing.event.ChangeEvent e) {
-	    bodyText.setText("");
-	    bodyScollPane.setVisible(checkBox.isSelected());
-	    bodyScollPane.getParent().validate();
-	}
-    }
-
-    private static final class FollowRedirectsChangeListener implements
-	    javax.swing.event.ChangeListener {
-	private final JCheckBox checkBox;
-	private final ClientModel model;
-
-	private FollowRedirectsChangeListener(JCheckBox checkBox,
-		ClientModel model) {
-	    this.checkBox = checkBox;
-	    this.model = model;
-	}
-
-	@Override
-	public void stateChanged(javax.swing.event.ChangeEvent e) {
-	    model.setFollowRedirects(checkBox.isSelected());
-	}
-    }
-
-    private static final class MethodSelectListener implements ItemListener {
-	private final JComboBox combobox;
-	private final ClientModel model;
-
-	private MethodSelectListener(JComboBox combobox, ClientModel model) {
-	    this.combobox = combobox;
-	    this.model = model;
-	}
-
-	@Override
-	public void itemStateChanged(ItemEvent event) {
-	    model.setMethod((HttpMethod) combobox.getSelectedObjects()[0]);
-	}
-    }
-
-    private static final class BodyTextDocumentListener implements
-	    javax.swing.event.DocumentListener {
-	private final ClientModel model;
-	private final JTextComponent text;
-
-	private BodyTextDocumentListener(ClientModel model, JTextComponent text) {
-	    this.model = model;
-	    this.text = text;
-	}
-
-	@Override
-	public void removeUpdate(javax.swing.event.DocumentEvent event) {
-	    changedUpdate(event);
-	}
-
-	@Override
-	public void insertUpdate(javax.swing.event.DocumentEvent event) {
-	    changedUpdate(event);
-	}
-
-	@Override
-	public void changedUpdate(javax.swing.event.DocumentEvent event) {
-	    model.setBody(text.getText());
-	}
-    }
-
-    private static final class UrlFieldDocumentListener implements
-	    javax.swing.event.DocumentListener {
-	private final ClientModel model;
-	private final JTextComponent text;
-
-	private UrlFieldDocumentListener(ClientModel model, JTextComponent text) {
-	    this.model = model;
-	    this.text = text;
-	}
-
-	@Override
-	public void removeUpdate(javax.swing.event.DocumentEvent event) {
-	    changedUpdate(event);
-	}
-
-	@Override
-	public void insertUpdate(javax.swing.event.DocumentEvent event) {
-	    changedUpdate(event);
-	}
-
-	@Override
-	public void changedUpdate(javax.swing.event.DocumentEvent event) {
-	    model.setUrl(text.getText());
-	}
-    }
 
 }
