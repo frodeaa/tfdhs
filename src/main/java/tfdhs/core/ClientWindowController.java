@@ -41,11 +41,10 @@ public class ClientWindowController implements ClientController {
     }
 
     protected HttpRequest createRequest() {
-	// Map<String, String> headers = createHeaderFields(model.getHeaders());
 	return request = builder.newRequest(model.getUrl(), model.getMethod())
 		.body(model.getBody() == null ? "" : model.getBody())
-		.followRedirects(model.isFollowRedirects())/* .headers(headers) */
-		.build();
+		.followRedirects(model.isFollowRedirects())
+		.headers(model.getHeaderFields()).build();
 
     }
 

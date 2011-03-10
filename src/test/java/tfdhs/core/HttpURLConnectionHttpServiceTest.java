@@ -312,8 +312,11 @@ public class HttpURLConnectionHttpServiceTest {
 
 	verify(mockConnection).setRequestMethod("POST");
 	verify(mockConnection).setAllowUserInteraction(true);
+	verify(mockConnection).setRequestProperty("Content-Type",
+		"application/xml");
 	verify(mockConnection).setRequestProperty("Content-Length",
 		"body".getBytes().length + "");
+
 	verify(mockConnection).setDoOutput(true);
 
     }

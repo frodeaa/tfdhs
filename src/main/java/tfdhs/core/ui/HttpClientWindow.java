@@ -70,7 +70,7 @@ public class HttpClientWindow implements ClientWindow,
 	followRedirectsChangeListener(model, followRedirectsCheckBox);
 	bodyInputChangeListener(selectBodyBox, bodyTextArea, bodyScrollPane);
 	updateBodyDocumentListener(model, bodyTextArea);
-	sendRequestAction(controller, sendButton);
+	sendRequestAction(controller, tableModel, sendButton);
 
 	viewRequestAction(controller, viewRequestButton);
 	viewResponseAction(controller, viewResponseButton);
@@ -157,9 +157,10 @@ public class HttpClientWindow implements ClientWindow,
     }
 
     protected static Action sendRequestAction(
-	    final ClientController controller, AbstractButton button) {
+	    final ClientController controller, ListValueMapTableModel model,
+	    AbstractButton button) {
 
-	Action sendRequest = new SendRequestAction(controller);
+	Action sendRequest = new SendRequestAction(controller, model);
 	button.addActionListener(sendRequest);
 	return sendRequest;
 

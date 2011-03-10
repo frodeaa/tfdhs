@@ -10,6 +10,9 @@ import static org.mockito.Mockito.when;
 
 import java.awt.Component;
 import java.awt.Container;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -372,16 +375,23 @@ public class HttpClientWindowTest {
     public void testSendRequestAction() throws InterruptedException {
 
 	JButton mockButton = mock(JButton.class);
+	ClientModel mockClientModel = mock(ClientModel.class);
 	ClientController mockController = mock(ClientController.class);
+	ListValueMapTableModel mockModel = mock(ListValueMapTableModel.class);
 
 	Action action = HttpClientWindow.sendRequestAction(mockController,
-		mockButton);
+		mockModel, mockButton);
 
 	assertNotNull("Send request action was null", action);
 	verify(mockButton).addActionListener(action);
 
+	Map<String, List<String>> data = Collections.emptyMap();
+	when(mockModel.getData()).thenReturn(data);
+	when(mockController.getModel()).thenReturn(mockClientModel);
+
 	action.actionPerformed(null);
 	Thread.sleep(100);
+	verify(mockClientModel).setHeaderFields(data);
 	verify(mockController).sendRequest();
 
     }

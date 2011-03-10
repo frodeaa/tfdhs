@@ -12,6 +12,7 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import tfdhs.api.Builder;
 import tfdhs.api.HttpBuilder;
@@ -86,12 +87,24 @@ public class HttpURLConnectionHttpService implements HttpService {
 	connection.setRequestMethod(request.getMethod().name());
 	connection.setAllowUserInteraction(true);
 
+	addRequestProperties(connection, request.getHeaders());
+
 	String body = request.getBody();
 	if (body != null && HttpMethod.POST.equals(request.getMethod())) {
 	    connection.setRequestProperty("Content-Length",
 		    "" + Integer.toString(body.getBytes().length));
 	    connection.setDoOutput(true);
 	    write(request.getBody(), connection.getOutputStream());
+	}
+
+    }
+
+    private void addRequestProperties(HttpURLConnection connection,
+	    Map<String, List<String>> headers) {
+	for (Entry<String, List<String>> header : headers.entrySet()) {
+	    for (String value : header.getValue()) {
+		connection.addRequestProperty(header.getKey(), value);
+	    }
 	}
     }
 
