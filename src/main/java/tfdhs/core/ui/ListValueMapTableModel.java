@@ -93,6 +93,16 @@ public class ListValueMapTableModel {
     }
 
     /**
+     * Adds a new empty row to the table model.
+     * 
+     * @return the row index of the new row that was added.
+     */
+    public int addRow() {
+	model.addRow(new String[] {});
+	return model.getRowCount() - 1;
+    }
+
+    /**
      * Removes the row at row from the model. Notification of the row being
      * removed will be sent to all the listeners.
      * 

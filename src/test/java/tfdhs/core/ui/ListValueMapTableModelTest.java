@@ -81,4 +81,19 @@ public class ListValueMapTableModelTest {
 	assertEquals("Model row count", 0, model.getRowCount());
 
     }
+
+    @Test
+    public void testAddRow() {
+
+	int newRowIndex = model.addRow();
+
+	assertEquals("New row index", 0, newRowIndex);
+	assertEquals("New row count", 1, model.getRowCount());
+	
+	newRowIndex = model.addRow();
+	assertEquals("New row index", 1, newRowIndex);
+	assertEquals("New row count", 2, model.getRowCount());
+	
+
+    }
 }
