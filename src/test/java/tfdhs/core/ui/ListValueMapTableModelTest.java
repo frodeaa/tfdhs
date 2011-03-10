@@ -38,6 +38,21 @@ public class ListValueMapTableModelTest {
 
     }
 
+    @Test
+    public void testGetData() {
+
+	Map<String, List<String>> data = new HashMap<String, List<String>>();
+	data.put("Header1", Collections.nCopies(3, "Value1"));
+	data.put("Header2", Collections.nCopies(3, "Value2"));
+
+	model.updateModel(data);
+
+	Map<String, List<String>> dataRetrieved = model.getData();
+
+	assertEquals("Data in not the same as data out", data, dataRetrieved);
+
+    }
+
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void testRemoveRowWhenEmptyThrowsIndexOutOfBounds() {
 
@@ -64,5 +79,6 @@ public class ListValueMapTableModelTest {
 
 	model.removeRow(0);
 	assertEquals("Model row count", 0, model.getRowCount());
+
     }
 }

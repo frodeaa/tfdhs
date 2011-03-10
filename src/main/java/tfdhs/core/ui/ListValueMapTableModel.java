@@ -1,6 +1,7 @@
 package tfdhs.core.ui;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -61,6 +62,34 @@ public class ListValueMapTableModel {
 	    map.put(key, new ArrayList<String>());
 	}
 	map.get(key).add(value);
+    }
+
+    /**
+     * Create a map where all unique names (first row) will be a map key and all
+     * values that shares same key will be added to the map value list. Key and
+     * list values can be an empty String but never <code>null</code>.
+     * 
+     * @return a map created from the table data.
+     */
+    public Map<String, List<String>> getData() {
+	Map<String, List<String>> headerMap = new HashMap<String, List<String>>();
+	for (int i = 0; i < model.getRowCount(); i++) {
+	    String header = stringValue(model.getValueAt(i, 0));
+	    String value = stringValue(model.getValueAt(i, 1));
+
+	    insert(header, value, headerMap);
+	}
+	return headerMap;
+    }
+
+    /**
+     * @param object
+     *            the object to get String value of.
+     * @return String value of an object, empty String if the object is
+     *         <code>null</code>.
+     */
+    protected String stringValue(Object object) {
+	return object == null ? "" : "" + object;
     }
 
     /**
