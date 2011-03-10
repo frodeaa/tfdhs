@@ -102,10 +102,19 @@ public class HttpURLConnectionHttpService implements HttpService {
     private void addRequestProperties(HttpURLConnection connection,
 	    Map<String, List<String>> headers) {
 	for (Entry<String, List<String>> header : headers.entrySet()) {
-	    for (String value : header.getValue()) {
-		connection.addRequestProperty(header.getKey(), value);
-	    }
+	    connection.setRequestProperty(header.getKey(),
+		    commaSeparatedValues(header.getValue()));
 	}
+    }
+
+    protected String commaSeparatedValues(List<String> values) {
+	StringBuffer buffer = new StringBuffer();
+	for (String value : values) {
+	    buffer.append(value);
+	    buffer.append(',');
+	}
+	buffer.setLength(buffer.length() - 1);
+	return buffer.toString();
     }
 
     /**

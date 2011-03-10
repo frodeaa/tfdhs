@@ -63,6 +63,15 @@ public class HttpURLConnectionHttpServiceTest {
 
     }
 
+    @Test
+    public void testCommaSeparatedValues() {
+
+	List<String> list = Collections.nCopies(4, "word");
+	assertEquals("List converted to comma separated value",
+		"word,word,word,word", service.commaSeparatedValues(list));
+
+    }
+
     @Test(expected = MalformedURLException.class)
     public void testNewConnectionFailsUrl() throws IOException {
 
@@ -304,16 +313,19 @@ public class HttpURLConnectionHttpServiceTest {
 	HttpRequest mockRequest = mock(HttpRequest.class);
 	OutputStream mockOut = mock(OutputStream.class);
 
+	Map<String, List<String>> headers = new HashMap<String, List<String>>();
+	headers.put("Content-Type",
+		Collections.singletonList("application/xml"));
+
 	when(mockRequest.getMethod()).thenReturn(HttpMethod.POST);
 	when(mockRequest.getBody()).thenReturn("body");
+	when(mockRequest.getHeaders()).thenReturn(headers);
 	when(mockConnection.getOutputStream()).thenReturn(mockOut);
 
 	service.prepareConnection(mockConnection, mockRequest);
 
 	verify(mockConnection).setRequestMethod("POST");
 	verify(mockConnection).setAllowUserInteraction(true);
-	verify(mockConnection).setRequestProperty("Content-Type",
-		"application/xml");
 	verify(mockConnection).setRequestProperty("Content-Length",
 		"body".getBytes().length + "");
 
