@@ -7,6 +7,13 @@ import java.util.Map.Entry;
 
 import javax.swing.table.DefaultTableModel;
 
+/**
+ * TableModel for a map of list, where the key will be the value in the first
+ * row and for each value in the list a row will be created with the key/value.
+ * 
+ * @author frode
+ * 
+ */
 public class ListValueMapTableModel {
 
     private final DefaultTableModel model;
