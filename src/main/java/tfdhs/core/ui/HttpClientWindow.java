@@ -38,6 +38,7 @@ public class HttpClientWindow implements ClientWindow,
 	Builder<javax.swing.JPanel> {
 
     public HttpClientWindow() {
+	this.tableModel = new ListValueMapTableModel();
 	this.panel = new JPanel();
 	initComponents();
 	layoutComponents();
@@ -68,6 +69,32 @@ public class HttpClientWindow implements ClientWindow,
 	viewRequestAction(controller, viewRequestButton);
 	viewResponseAction(controller, viewResponseButton);
 
+	addHeaderButton.setAction(new AbstractAction("+") {
+
+	    @Override
+	    public void actionPerformed(ActionEvent arg0) {
+		int newRow = tableModel.addRow();
+		headersTable.setRowSelectionInterval(newRow, newRow);
+	    }
+	});
+
+	removeHeaderButton.setAction(new AbstractAction("-") {
+
+	    @Override
+	    public void actionPerformed(ActionEvent arg0) {
+		int rowSelected = headersTable.getSelectedRow();
+		if (rowSelected > -1) {
+		    tableModel.removeRow(rowSelected);
+		    int newSelect = Math.min(Math.max(0, rowSelected - 1),
+			    Math.min(rowSelected, tableModel.getRowCount()));
+		    if (tableModel.getRowCount() > 0) {
+			headersTable.setRowSelectionInterval(newSelect,
+				newSelect);
+		    }
+		}
+	    }
+	});
+
     }
 
     @Override
@@ -76,7 +103,8 @@ public class HttpClientWindow implements ClientWindow,
 	urlField.setText(model.getUrl());
 	methodComboBox.setSelectedItem(model.getMethod());
 	followRedirectsCheckBox.setSelected(model.isFollowRedirects());
-	// headersTable.setModel(model.getHeaders());
+
+	tableModel.updateModel(model.getHeaderFields());
 	selectBodyBox.setSelected(model.isBodySet());
 	bodyTextArea.setText(model.getBody());
 	viewButtonGroup.setSelected(viewRequestButton.getModel(), true);
@@ -261,16 +289,11 @@ public class HttpClientWindow implements ClientWindow,
 	headersTable.setModel(new javax.swing.table.DefaultTableModel(2, 2));
 	headersTable.setName("headersTable");
 	headerScrollPane.setViewportView(headersTable);
-	headerScrollPane.setVisible(false);
-	headersTable.getColumnModel().getColumn(0)
-		.setHeaderValue("Header Name");
-	headersTable.getColumnModel().getColumn(1)
-		.setHeaderValue("Header Value");
+	headersTable.setModel(tableModel);
 
 	editHeaderToolbar.setFloatable(false);
 	editHeaderToolbar.setRollover(true);
 	editHeaderToolbar.setName("editHeaderToolbar");
-	editHeaderToolbar.setVisible(false);
 
 	addHeaderButton.setText("+");
 	addHeaderButton.setFocusable(false);
@@ -492,6 +515,7 @@ public class HttpClientWindow implements ClientWindow,
     private javax.swing.JTextPane viewTextPane;
     private javax.swing.JToolBar viewToolbar;
     private javax.swing.ButtonGroup viewButtonGroup;
+    private final ListValueMapTableModel tableModel;
 
     private static final class ViewAction extends AbstractAction {
 	private final ClientController controller;
