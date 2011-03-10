@@ -89,11 +89,56 @@ public class ListValueMapTableModelTest {
 
 	assertEquals("New row index", 0, newRowIndex);
 	assertEquals("New row count", 1, model.getRowCount());
-	
+
 	newRowIndex = model.addRow();
 	assertEquals("New row index", 1, newRowIndex);
 	assertEquals("New row count", 2, model.getRowCount());
-	
+
+    }
+
+    @Test
+    public void testSetGetValueAt() {
+
+	int row = model.addRow();
+
+	model.setValueAt("header", row, 0);
+	assertEquals("header", model.getValueAt(row, 0));
+
+	model.setValueAt("value", row, 1);
+	assertEquals("value", model.getValueAt(row, 1));
+
+    }
+
+    @Test
+    public void testIsCellEditable() {
+
+	int row = model.addRow();
+
+	assertTrue("Not editable", model.isCellEditable(row, 0));
+	assertTrue("Not editable", model.isCellEditable(row, 1));
+
+    }
+
+    @Test
+    public void testGetColumnName() {
+
+	assertEquals("Column 0", "Header Name", model.getColumnName(0));
+	assertEquals("Column 1", "Header Value", model.getColumnName(1));
+
+    }
+
+    @Test
+    public void testGetColumnCount() {
+
+	assertEquals("Column count", 2, model.getColumnCount());
+
+    }
+
+    @Test
+    public void testGetColumnClass() {
+
+	assertEquals("Column 0 class", String.class, model.getColumnClass(0));
+	assertEquals("Column 1 class", String.class, model.getColumnClass(1));
 
     }
 }

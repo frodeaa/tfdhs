@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  * TableModel for a map of list, where the key will be the value in the first
@@ -15,7 +17,7 @@ import javax.swing.table.DefaultTableModel;
  * @author frode
  * 
  */
-public class ListValueMapTableModel {
+public class ListValueMapTableModel implements TableModel {
 
     private final DefaultTableModel model;
 
@@ -25,7 +27,13 @@ public class ListValueMapTableModel {
      */
     public ListValueMapTableModel() {
 	model = new DefaultTableModel(new String[] { "Header Name",
-		"Header Value" }, 0);
+		"Header Value" }, 0) {
+	    @Override
+	    public Class<?> getColumnClass(int column) {
+		return String.class;
+	    }
+
+	};
     }
 
     /**
@@ -115,8 +123,76 @@ public class ListValueMapTableModel {
 	model.removeRow(row);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public int getRowCount() {
 	return model.getRowCount();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addTableModelListener(TableModelListener l) {
+	model.addTableModelListener(l);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Class<?> getColumnClass(int column) {
+	return model.getColumnClass(column);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getColumnCount() {
+	return model.getColumnCount();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getColumnName(int column) {
+	return model.getColumnName(column);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object getValueAt(int row, int column) {
+	return model.getValueAt(row, column);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isCellEditable(int row, int column) {
+	return model.isCellEditable(row, column);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void removeTableModelListener(TableModelListener l) {
+	model.removeTableModelListener(l);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setValueAt(Object aValue, int row, int column) {
+	model.setValueAt(aValue, row, column);
     }
 
 }
