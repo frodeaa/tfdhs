@@ -2,7 +2,7 @@ Tool for testing HTTP services.
 
 ## Test SNAPSHOT
 
- mvn install && export CLASSPATH=target/classes/ && java tfdhs.HttpClient
+ mvn clean install && java -jar target/tfdhs-0.0.1-SNAPSHOT.jar
 
 ## Known Issues 
 
