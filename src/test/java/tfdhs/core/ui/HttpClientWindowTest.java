@@ -29,6 +29,7 @@ import tfdhs.api.HttpMethod;
 import tfdhs.api.HttpRequest;
 import tfdhs.api.HttpResponse;
 import tfdhs.core.ClientController;
+import tfdhs.core.ClientController.Viewstate;
 import tfdhs.core.ClientModel;
 
 public class HttpClientWindowTest {
@@ -366,4 +367,59 @@ public class HttpClientWindowTest {
 	assertEquals("Model url", "text3", model.getBody());
 
     }
+
+    @Test
+    public void testSendRequestAction() throws InterruptedException {
+
+	JButton mockButton = mock(JButton.class);
+	ClientController mockController = mock(ClientController.class);
+
+	Action action = HttpClientWindow.sendRequestAction(mockController,
+		mockButton);
+
+	assertNotNull("Send request action was null", action);
+	verify(mockButton).addActionListener(action);
+
+	action.actionPerformed(null);
+	Thread.sleep(100);
+	verify(mockController).sendRequest();
+
+    }
+
+    @Test
+    public void testViewRequestAction() throws InterruptedException {
+
+	JButton mockButton = mock(JButton.class);
+	ClientController mockController = mock(ClientController.class);
+
+	Action action = HttpClientWindow.viewRequestAction(mockController,
+		mockButton);
+
+	assertNotNull("View request action was null", action);
+	verify(mockButton).setAction(action);
+
+	action.actionPerformed(null);
+	Thread.sleep(100);
+	verify(mockController).view(Viewstate.request);
+
+    }
+
+    @Test
+    public void testViewResponseAction() throws InterruptedException {
+
+	JButton mockButton = mock(JButton.class);
+	ClientController mockController = mock(ClientController.class);
+
+	Action action = HttpClientWindow.viewResponseAction(mockController,
+		mockButton);
+
+	assertNotNull("View request action was null", action);
+	verify(mockButton).setAction(action);
+
+	action.actionPerformed(null);
+	Thread.sleep(100);
+	verify(mockController).view(Viewstate.response);
+
+    }
+
 }
