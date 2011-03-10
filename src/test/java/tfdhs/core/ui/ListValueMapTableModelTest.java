@@ -53,6 +53,31 @@ public class ListValueMapTableModelTest {
 
     }
 
+    @Test
+    public void testAddNullTableModelListener() {
+
+	model.addTableModelListener(null);
+
+    }
+
+    @Test
+    public void testRemoveNullTableModelListener() {
+
+	model.removeTableModelListener(null);
+
+    }
+
+    @Test
+    public void testStringValue() {
+
+	assertEquals("String value of null", "", model.stringValue(null));
+	assertEquals("String value of empty String", "", model.stringValue(""));
+	assertEquals("String value of number", "3", model.stringValue(3));
+	assertEquals("String value of String with space", " word ",
+		model.stringValue(" word "));
+
+    }
+
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void testRemoveRowWhenEmptyThrowsIndexOutOfBounds() {
 
