@@ -50,6 +50,8 @@ public class ListValueMapTableModel implements TableModel {
 		model.addRow(new Object[] { header.getKey(), value });
 	    }
 	}
+
+	model.fireTableRowsInserted(0, model.getRowCount());
     }
 
     /**

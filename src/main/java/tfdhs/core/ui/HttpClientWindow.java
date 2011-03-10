@@ -9,10 +9,12 @@ import java.util.Map.Entry;
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
@@ -69,32 +71,24 @@ public class HttpClientWindow implements ClientWindow,
 	viewRequestAction(controller, viewRequestButton);
 	viewResponseAction(controller, viewResponseButton);
 
-	addHeaderButton.setAction(new AbstractAction("+") {
+	addNewHeaderRowAction(addHeaderButton, tableModel, headersTable);
+	removeSelectedRowAction(removeHeaderButton, tableModel, headersTable);
 
-	    @Override
-	    public void actionPerformed(ActionEvent arg0) {
-		int newRow = tableModel.addRow();
-		headersTable.setRowSelectionInterval(newRow, newRow);
-	    }
-	});
+    }
 
-	removeHeaderButton.setAction(new AbstractAction("-") {
+    protected Action addNewHeaderRowAction(JButton source,
+	    ListValueMapTableModel model, JTable table) {
+	Action action = new AddNewRowAction(source.getText(), model, table);
+	source.setAction(action);
+	return action;
+    }
 
-	    @Override
-	    public void actionPerformed(ActionEvent arg0) {
-		int rowSelected = headersTable.getSelectedRow();
-		if (rowSelected > -1) {
-		    tableModel.removeRow(rowSelected);
-		    int newSelect = Math.min(Math.max(0, rowSelected - 1),
-			    Math.min(rowSelected, tableModel.getRowCount()));
-		    if (tableModel.getRowCount() > 0) {
-			headersTable.setRowSelectionInterval(newSelect,
-				newSelect);
-		    }
-		}
-	    }
-	});
-
+    protected Action removeSelectedRowAction(JButton source,
+	    final ListValueMapTableModel model, final JTable table) {
+	Action action = new RemoveSelectedRowAction(source.getText(), model,
+		table);
+	source.setAction(action);
+	return action;
     }
 
     @Override
@@ -516,6 +510,50 @@ public class HttpClientWindow implements ClientWindow,
     private javax.swing.JToolBar viewToolbar;
     private javax.swing.ButtonGroup viewButtonGroup;
     private final ListValueMapTableModel tableModel;
+
+    private static final class RemoveSelectedRowAction extends AbstractAction {
+	private final ListValueMapTableModel model;
+	private final JTable table;
+
+	private RemoveSelectedRowAction(String name,
+		ListValueMapTableModel model, JTable table) {
+	    super(name);
+	    this.model = model;
+	    this.table = table;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+	    int rowSelected = table.getSelectedRow();
+	    if (rowSelected > -1) {
+		model.removeRow(rowSelected);
+		int rowCount = model.getRowCount();
+		int newSelect = Math.min(Math.max(0, rowSelected - 1),
+			Math.min(rowSelected, rowCount));
+		if (rowCount > 0) {
+		    table.setRowSelectionInterval(newSelect, newSelect);
+		}
+	    }
+	}
+    }
+
+    private static final class AddNewRowAction extends AbstractAction {
+	private final ListValueMapTableModel model;
+	private final JTable table;
+
+	private AddNewRowAction(String arg0, ListValueMapTableModel model,
+		JTable table) {
+	    super(arg0);
+	    this.model = model;
+	    this.table = table;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+	    int newRow = model.addRow();
+	    table.setRowSelectionInterval(newRow, newRow);
+	}
+    }
 
     private static final class ViewAction extends AbstractAction {
 	private final ClientController controller;

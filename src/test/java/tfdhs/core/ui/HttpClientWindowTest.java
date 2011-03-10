@@ -11,9 +11,12 @@ import static org.mockito.Mockito.when;
 import java.awt.Component;
 import java.awt.Container;
 
+import javax.swing.Action;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.Document;
@@ -54,6 +57,86 @@ public class HttpClientWindowTest {
 	when(mockController.getModel()).thenReturn(model);
 
 	window.bind(mockController);
+
+    }
+
+    @Test
+    public void testAddNewHeaderRowAction() {
+
+	JButton source = new JButton("Adding");
+	JTable mockTable = mock(JTable.class);
+	ListValueMapTableModel mockModel = mock(ListValueMapTableModel.class);
+
+	Action action = window.addNewHeaderRowAction(source, mockModel,
+		mockTable);
+
+	assertNotNull("Action was null", action);
+	assertEquals("Action name", "Adding", source.getText());
+	when(mockModel.addRow()).thenReturn(33);
+
+	action.actionPerformed(null);
+
+	verify(mockModel).addRow();
+	verify(mockTable).setRowSelectionInterval(33, 33);
+    }
+
+    @Test
+    public void testAddNewHeaderRowActionButtonActionSet() {
+
+	JButton mockButton = mock(JButton.class);
+
+	Action action = window.addNewHeaderRowAction(mockButton, null, null);
+
+	verify(mockButton).setAction(action);
+
+    }
+
+    @Test
+    public void testRemoveSelectedRowAction() {
+
+	JButton source = new JButton("Removing");
+	JTable mockTable = mock(JTable.class);
+	ListValueMapTableModel mockModel = mock(ListValueMapTableModel.class);
+
+	Action action = window.removeSelectedRowAction(source, mockModel,
+		mockTable);
+
+	assertNotNull("Action was null", action);
+	assertEquals("Action name", "Removing", source.getText());
+
+	when(mockTable.getSelectedRow()).thenReturn(33);
+	when(mockModel.getRowCount()).thenReturn(32);
+
+	action.actionPerformed(null);
+
+	verify(mockModel).removeRow(33);
+	verify(mockTable).setRowSelectionInterval(32, 32);
+
+    }
+
+    @Test
+    public void testRemoveNone() {
+
+	JButton source = new JButton("Removing");
+	JTable mockTable = mock(JTable.class);
+	ListValueMapTableModel mockModel = mock(ListValueMapTableModel.class);
+
+	window.removeSelectedRowAction(source, mockModel, mockTable);
+
+	when(mockTable.getSelectedRow()).thenReturn(-1);
+    }
+
+    @Test
+    public void testRemoveLast() {
+
+	JButton source = new JButton("Removing");
+	JTable mockTable = mock(JTable.class);
+	ListValueMapTableModel mockModel = mock(ListValueMapTableModel.class);
+
+	window.removeSelectedRowAction(source, mockModel, mockTable);
+
+	when(mockTable.getSelectedRow()).thenReturn(0);
+	when(mockModel.getRowCount()).thenReturn(0);
 
     }
 
@@ -239,8 +322,7 @@ public class HttpClientWindowTest {
 	when(mockComponent.getDocument()).thenReturn(mockDocument);
 
 	DocumentListener listener = HttpClientWindow
-		.updateUrlPropertyDocumentListener(
-		model, mockComponent);
+		.updateUrlPropertyDocumentListener(model, mockComponent);
 
 	verify(mockDocument).addDocumentListener(listener);
 
@@ -266,8 +348,8 @@ public class HttpClientWindowTest {
 
 	when(mockComponent.getDocument()).thenReturn(mockDocument);
 
-	DocumentListener listener = HttpClientWindow.updateBodyDocumentListener(model,
-		mockComponent);
+	DocumentListener listener = HttpClientWindow
+		.updateBodyDocumentListener(model, mockComponent);
 
 	verify(mockDocument).addDocumentListener(listener);
 
