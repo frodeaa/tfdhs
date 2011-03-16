@@ -3,6 +3,7 @@ package tfdhs;
 import java.net.Authenticator;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.logging.Logger;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.swing.JFrame;
@@ -18,10 +19,13 @@ import tfdhs.core.HttpsHostnameVerifier;
 import tfdhs.core.TrustManager;
 import tfdhs.core.ui.DialogAuthenticatorResolver;
 import tfdhs.core.ui.HttpClientWindow;
+import static java.lang.System.getProperty;
 
 public class HttpClient extends JFrame {
 
     private static HttpBuilder builder = new BasicHttpBuilder();
+    private static final Logger logger = Logger.getLogger(HttpClient.class
+	    .getName());
 
     /**
      * @param window
@@ -34,24 +38,46 @@ public class HttpClient extends JFrame {
     }
 
     /**
-     * Setup the HTTPClientService to ignore all Certificates.
+     * Setup the HTTPClientService to use TrustManager and HostnameVerifier,
+     * default is to setup the service to ignore all certificates and accept all
+     * hostname given a SSLSession.
+     * 
      * @throws KeyManagementException
      * @throws NoSuchAlgorithmException
      */
-    protected static void ignoreAllSecureCertificates()
+    protected static void loadSslConfigurations()
 	    throws KeyManagementException, NoSuchAlgorithmException {
 
-	HttpsURLConnection.setDefaultSSLSocketFactory(TrustManager
-		.newSocketFactory(TrustManager.trustAllCerts));
-	HttpsURLConnection
-		.setDefaultHostnameVerifier(HttpsHostnameVerifier.allHostsValid);
+	String trustManager = null;
+	try {
+	    trustManager = getProperty(TrustManager.class.getName(),
+		    TrustManager.trustAllCerts.name());
+	    HttpsURLConnection.setDefaultSSLSocketFactory(TrustManager
+		    .newSocketFactory(TrustManager.valueOf(trustManager)));
+	} catch (Exception e) {
+	    logger.info("Not a valid trustManager: " + trustManager
+		    + " accepts: " + TrustManager.values());
+	}
+
+	String hostnameVerifier = null;
+	try {
+	    hostnameVerifier = getProperty(
+		    HttpsHostnameVerifier.class.getName(),
+		    HttpsHostnameVerifier.allHostsValid.name());
+
+	    HttpsURLConnection.setDefaultHostnameVerifier(HttpsHostnameVerifier
+		    .valueOf(hostnameVerifier));
+	} catch (Exception e) {
+	    logger.info("Not a valid trustManager: " + trustManager
+		    + " accepts: " + HttpsHostnameVerifier.values());
+	}
 
     }
 
     public static void main(String[] args) throws KeyManagementException,
 	    NoSuchAlgorithmException {
-	
-	ignoreAllSecureCertificates();
+
+	loadSslConfigurations();
 
 	final HttpClientWindow window = new HttpClientWindow();
 	final ClientModel model = new ClientModel();
