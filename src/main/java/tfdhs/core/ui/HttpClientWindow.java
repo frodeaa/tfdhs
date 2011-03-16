@@ -24,6 +24,7 @@ import tfdhs.api.HttpResponse;
 import tfdhs.core.ClientController;
 import tfdhs.core.ClientController.Viewstate;
 import tfdhs.core.ClientModel;
+import tfdhs.core.ui.LineNumberRowView.Alignment;
 import tfdhs.core.ui.action.AddNewRowAction;
 import tfdhs.core.ui.action.RemoveSelectedRowAction;
 import tfdhs.core.ui.action.SendRequestAction;
@@ -105,6 +106,7 @@ public class HttpClientWindow implements ClientWindow,
 	tableModel.updateModel(model.getHeaderFields());
 	selectBodyBox.setSelected(model.isBodySet());
 	bodyTextArea.setText(model.getBody());
+
 	viewButtonGroup.setSelected(viewRequestButton.getModel(), true);
 
     }
@@ -213,6 +215,7 @@ public class HttpClientWindow implements ClientWindow,
 
 	viewTextPane.setText(requestText.toString());
 	viewTextPane.setCaretPosition(0);
+	viewTextPane.validate();
     }
 
     @Override
@@ -241,6 +244,7 @@ public class HttpClientWindow implements ClientWindow,
 
 	viewTextPane.setText(responseText.toString());
 	viewTextPane.setCaretPosition(0);
+	viewTextPane.validate();
     }
 
     private void initComponents() {
@@ -256,6 +260,7 @@ public class HttpClientWindow implements ClientWindow,
 	removeHeaderButton = new javax.swing.JButton();
 	selectBodyBox = new javax.swing.JCheckBox();
 	bodyScrollPane = new javax.swing.JScrollPane();
+
 	bodyTextArea = new javax.swing.JTextArea();
 	viewToolbar = new javax.swing.JToolBar();
 	viewRequestButton = new javax.swing.JToggleButton();
@@ -263,7 +268,6 @@ public class HttpClientWindow implements ClientWindow,
 	viewScroler = new javax.swing.JScrollPane();
 	viewTextPane = new JTextPane();
 	viewButtonGroup = new javax.swing.ButtonGroup();
-
 	urlLabel.setText("URL:");
 	urlLabel.setName("urlLabel");
 
@@ -352,6 +356,8 @@ public class HttpClientWindow implements ClientWindow,
 		new Boolean(true));
 	viewTextPane.setName("viewTextPane");
 	viewScroler.setViewportView(viewTextPane);
+	viewScroler.setRowHeaderView(LineNumberRowView.newNumberComponentView(
+		viewTextPane, Alignment.right));
     }
 
     private void layoutComponents() {
